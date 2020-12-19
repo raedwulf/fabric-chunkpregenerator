@@ -24,6 +24,8 @@ public final class Commands {
 					.requires(executor -> executor.hasPermissionLevel(2));
 
 			lab.then(CommandManager.literal("start")
+					.then(CommandManager.argument("x", IntegerArgumentType.integer(0))
+					.then(CommandManager.argument("y", IntegerArgumentType.integer(0))
 					.then(CommandManager.argument("radius", IntegerArgumentType.integer(0))
 							.executes(cmd -> {
 
@@ -33,14 +35,11 @@ public final class Commands {
 					return Command.SINGLE_SUCCESS;
 				}
 
+				int x = IntegerArgumentType.getInteger(cmd, "x");
+				int y = IntegerArgumentType.getInteger(cmd, "y");
 				int radius = IntegerArgumentType.getInteger(cmd, "radius");
 
-				ChunkPos origin;
-				if (source.getEntity() == null) {
-					origin = new ChunkPos(0, 0);
-				} else {
-					origin = new ChunkPos(new BlockPos(source.getPlayer().getPos()));
-				}
+				ChunkPos origin = new ChunkPos(x, y);
 
 				activeTask = new PregenerationTask(source.getWorld(), origin.x, origin.z, radius);
 				pregenBar = new PregenBar();
@@ -54,7 +53,7 @@ public final class Commands {
 				activeTask.run(createPregenListener(source));
 
 				return Command.SINGLE_SUCCESS;
-			})));
+			})))));
 
 			lab.then(CommandManager.literal("stop")
 					.executes(cmd -> {
