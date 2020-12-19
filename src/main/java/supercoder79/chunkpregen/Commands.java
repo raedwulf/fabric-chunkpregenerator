@@ -61,8 +61,8 @@ public final class Commands {
 				if (activeTask != null) {
 					activeTask.stop();
 
-					int count = activeTask.getOkCount() + activeTask.getErrorCount();
-					int total = activeTask.getTotalCount();
+					long count = activeTask.getOkCount() + activeTask.getErrorCount();
+					long total = activeTask.getTotalCount();
 
 					double percent = (double) count / total * 100.0;
 					String message = "Pregen stopped! " + count + " out of " + total + " chunks generated. (" + percent + "%)";
@@ -78,8 +78,8 @@ public final class Commands {
 			lab.then(CommandManager.literal("status")
 					.executes(cmd -> {
 				if (activeTask != null) {
-					int count = activeTask.getOkCount() + activeTask.getErrorCount();
-					int total = activeTask.getTotalCount();
+					long count = activeTask.getOkCount() + activeTask.getErrorCount();
+					long total = activeTask.getTotalCount();
 
 					double percent = (double) count / total * 100.0;
 					String message = "Pregen status: " + count + " out of " + total + " chunks generated. (" + percent + "%)";
@@ -108,12 +108,12 @@ public final class Commands {
 	private static PregenerationTask.Listener createPregenListener(ServerCommandSource source) {
 		return new PregenerationTask.Listener() {
 			@Override
-			public void update(int ok, int error, int total) {
+			public void update(long ok, long error, long total) {
 				pregenBar.update(ok, error, total);
 			}
 
 			@Override
-			public void complete(int error) {
+			public void complete(long error) {
 				source.sendFeedback(new LiteralText("Pregeneration Done!"), true);
 
 				if (error > 0) {

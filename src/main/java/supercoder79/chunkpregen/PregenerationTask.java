@@ -12,8 +12,8 @@ import net.minecraft.world.chunk.ChunkStatus;
 import java.util.concurrent.atomic.AtomicLong;
 
 public final class PregenerationTask {
-    private static final int BATCH_SIZE = 32;
-    private static final int QUEUE_THRESHOLD = 8;
+    private static final long BATCH_SIZE = 32;
+    private static final long QUEUE_THRESHOLD = 8;
 
     private final MinecraftServer server;
     private final ServerChunkManager chunkManager;
@@ -40,15 +40,15 @@ public final class PregenerationTask {
         this.totalCount = diameter * diameter;
     }
 
-    public int getOkCount() {
+    public long getOkCount() {
         return this.okCount.get();
     }
 
-    public int getErrorCount() {
+    public long getErrorCount() {
         return this.errorCount.get();
     }
 
-    public int getTotalCount() {
+    public long getTotalCount() {
         return this.totalCount;
     }
 
@@ -74,7 +74,7 @@ public final class PregenerationTask {
                 return;
             }
 
-            int enqueueCount = BATCH_SIZE - this.queuedCount.get();
+            long enqueueCount = BATCH_SIZE - this.queuedCount.get();
             if (enqueueCount <= 0) {
                 return;
             }
@@ -129,16 +129,16 @@ public final class PregenerationTask {
 
         this.listener.update(this.okCount.get(), this.errorCount.get(), this.totalCount);
 
-        int queuedCount = this.queuedCount.decrementAndGet();
+        long queuedCount = this.queuedCount.decrementAndGet();
         if (queuedCount <= QUEUE_THRESHOLD) {
             this.tryEnqueueTasks();
         }
     }
 
-    private LongList collectChunks(int count) {
-        LongList chunks = new LongArrayList(count);
+    private LongList collectChunks(long count) {
+        LongList chunks = new LongArrayList((int)count);
 
-        for (int i = 0; i < count; i++) {
+        for (long i = 0; i < count; i++) {
             long chunk = this.iterator.next();
             if (chunk == Long.MAX_VALUE) {
                 break;
@@ -161,8 +161,8 @@ public final class PregenerationTask {
     }
 
     public interface Listener {
-        void update(int ok, int error, int total);
+        void update(long ok, long error, long total);
 
-        void complete(int error);
+        void complete(long error);
     }
 }

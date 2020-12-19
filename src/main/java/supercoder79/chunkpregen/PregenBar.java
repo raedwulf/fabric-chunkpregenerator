@@ -21,8 +21,8 @@ public final class PregenBar implements AutoCloseable {
         this.bar.setDarkenSky(false);
     }
 
-    public void update(int ok, int error, int total) {
-        int count = ok + error;
+    public void update(long ok, long error, long total) {
+        long count = ok + error;
 
         float percent = (float) count / total;
 
